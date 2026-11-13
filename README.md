@@ -1,5 +1,5 @@
-==============================================================================
- THREAT INTELLIGENCE DASHBOARD - GITHUB REPORT
+
+THREAT INTELLIGENCE DASHBOARD - GITHUB REPORT
  Honeypot-driven threat intelligence: Cowrie -> Filebeat -> Logstash -> Elasticsearch -> Kibana
  Built 2026-11-13
  Step-by-step process, complete source code and data-flow diagrams
