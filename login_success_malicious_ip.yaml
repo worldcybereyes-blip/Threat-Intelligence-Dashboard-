@@ -1,0 +1,28 @@
+name: "TI - Honeypot login succeeded from a threat-intel 'malicious' IP"
+type: any
+index: honeypot-cowrie-*
+timestamp_field: "@timestamp"
+timestamp_type: iso
+filter:
+  - query:
+      query_string:
+        query: 'event.action:"cowrie.login.success" AND ti.verdict:"malicious"'
+query_key: source.ip
+realert:
+  minutes: 60
+alert:
+  - debug
+alert_subject: "[Honeypot] Known-malicious IP {0} got a shell"
+alert_subject_args:
+  - source.ip
+alert_text_type: alert_text_only
+alert_text: |
+  Known-malicious IP {0} ({1}) logged in as {2}/{3}.
+  AbuseIPDB confidence: {4}   OTX pulses: {5}
+alert_text_args:
+  - source.ip
+  - source.geo.country_name
+  - cowrie.username
+  - cowrie.password
+  - ti.abuseipdb.confidence_score
+  - ti.otx.pulse_count

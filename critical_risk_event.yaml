@@ -1,0 +1,33 @@
+name: "TI - Critical risk event (score >= 80)"
+type: any
+index: honeypot-cowrie-*
+timestamp_field: "@timestamp"
+timestamp_type: iso
+filter:
+  - range:
+      event.risk_score:
+        gte: 80
+query_key: source.ip
+realert:
+  minutes: 30
+alert:
+  - debug
+alert_subject: "[Honeypot] CRITICAL risk event from {0}"
+alert_subject_args:
+  - source.ip
+alert_text_type: alert_text_only
+alert_text: |
+  Source IP   : {0} ({1}, {2})
+  Event       : {3}
+  Risk score  : {4}  (TI verdict: {5}, AbuseIPDB confidence: {6})
+  Command/URL : {7} {8}
+alert_text_args:
+  - source.ip
+  - source.geo.country_name
+  - source.as.organization.name
+  - event.action
+  - event.risk_score
+  - ti.verdict
+  - ti.abuseipdb.confidence_score
+  - cowrie.input
+  - cowrie.url

@@ -1,0 +1,172 @@
+{
+  "index_patterns": ["honeypot-cowrie-*"],
+  "priority": 200,
+  "_meta": { "description": "Cowrie honeypot events enriched with GeoIP and threat intelligence" },
+  "template": {
+    "settings": {
+      "number_of_shards": 1,
+      "number_of_replicas": 0,
+      "index.lifecycle.name": "honeypot-retention",
+      "index.refresh_interval": "5s",
+      "index.mapping.total_fields.limit": 2000
+    },
+    "mappings": {
+      "dynamic_templates": [
+        {
+          "strings_as_keywords": {
+            "match_mapping_type": "string",
+            "mapping": { "type": "keyword", "ignore_above": 1024 }
+          }
+        }
+      ],
+      "properties": {
+        "@timestamp": { "type": "date" },
+        "message": { "type": "text" },
+        "tags": { "type": "keyword" },
+        "event": {
+          "properties": {
+            "action": { "type": "keyword" },
+            "dataset": { "type": "keyword" },
+            "module": { "type": "keyword" },
+            "outcome": { "type": "keyword" },
+            "severity": { "type": "integer" },
+            "risk_score": { "type": "integer" },
+            "risk_level": { "type": "keyword" }
+          }
+        },
+        "source": {
+          "properties": {
+            "ip": { "type": "ip" },
+            "port": { "type": "integer" },
+            "public": { "type": "boolean" },
+            "geo": {
+              "properties": {
+                "location": { "type": "geo_point" },
+                "country_name": { "type": "keyword" },
+                "country_iso_code": { "type": "keyword" },
+                "continent_code": { "type": "keyword" },
+                "region_name": { "type": "keyword" },
+                "city_name": { "type": "keyword" },
+                "timezone": { "type": "keyword" }
+              }
+            },
+            "as": {
+              "properties": {
+                "number": { "type": "long" },
+                "organization": { "properties": { "name": { "type": "keyword" } } }
+              }
+            }
+          }
+        },
+        "destination": {
+          "properties": {
+            "ip": { "type": "ip" },
+            "port": { "type": "integer" }
+          }
+        },
+        "network": {
+          "properties": {
+            "protocol": { "type": "keyword" },
+            "transport": { "type": "keyword" }
+          }
+        },
+        "observer": {
+          "properties": {
+            "name": { "type": "keyword" },
+            "type": { "type": "keyword" }
+          }
+        },
+        "cowrie": {
+          "properties": {
+            "session": { "type": "keyword" },
+            "username": { "type": "keyword" },
+            "password": { "type": "keyword" },
+            "credential": { "type": "keyword" },
+            "input": {
+              "type": "keyword",
+              "ignore_above": 1024,
+              "fields": { "text": { "type": "text" } }
+            },
+            "url": { "type": "keyword" },
+            "shasum": { "type": "keyword" },
+            "outfile": { "type": "keyword" },
+            "hassh": { "type": "keyword" },
+            "hassh_algorithms": { "type": "keyword", "index": false, "doc_values": false },
+            "client_version": { "type": "keyword" },
+            "duration": { "type": "float" },
+            "ttylog": { "type": "keyword" },
+            "arch": { "type": "keyword" },
+            "size": { "type": "long", "ignore_malformed": true }
+          }
+        },
+        "threat": {
+          "properties": {
+            "technique": {
+              "properties": {
+                "id": { "type": "keyword" },
+                "name": { "type": "keyword" }
+              }
+            }
+          }
+        },
+        "ti": {
+          "properties": {
+            "verdict": { "type": "keyword" },
+            "score": { "type": "integer" },
+            "providers": { "type": "keyword" },
+            "enriched_at": { "type": "date" },
+            "simulated": { "type": "boolean" },
+            "abuseipdb": {
+              "properties": {
+                "confidence_score": { "type": "integer" },
+                "total_reports": { "type": "integer" },
+                "distinct_reporters": { "type": "integer" },
+                "usage_type": { "type": "keyword" },
+                "isp": { "type": "keyword" },
+                "domain": { "type": "keyword" },
+                "is_tor": { "type": "boolean" },
+                "is_whitelisted": { "type": "boolean" },
+                "last_reported_at": { "type": "date", "ignore_malformed": true }
+              }
+            },
+            "otx": {
+              "properties": {
+                "pulse_count": { "type": "integer" },
+                "pulse_names": { "type": "keyword" },
+                "tags": { "type": "keyword" },
+                "malware_families": { "type": "keyword" },
+                "reputation": { "type": "integer" }
+              }
+            },
+            "virustotal": {
+              "properties": {
+                "malicious": { "type": "integer" },
+                "suspicious": { "type": "integer" },
+                "harmless": { "type": "integer" },
+                "undetected": { "type": "integer" },
+                "reputation": { "type": "integer" },
+                "as_owner": { "type": "keyword" },
+                "country": { "type": "keyword" },
+                "tags": { "type": "keyword" }
+              }
+            },
+            "file": {
+              "properties": {
+                "found": { "type": "boolean" },
+                "verdict": { "type": "keyword" },
+                "malicious": { "type": "integer" },
+                "suspicious": { "type": "integer" },
+                "undetected": { "type": "integer" },
+                "threat_label": { "type": "keyword" },
+                "type_description": { "type": "keyword" },
+                "size": { "type": "long" },
+                "names": { "type": "keyword" },
+                "simulated": { "type": "boolean" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

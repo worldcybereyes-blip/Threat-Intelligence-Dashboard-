@@ -1,0 +1,20 @@
+# ElastAlert2 global config. scripts\setup.ps1 renders this to config.yaml (git-ignored),
+# injecting the generated password - the secret is never stored in this template.
+rules_folder: /opt/elastalert/rules
+scan_subdirectories: false
+
+run_every:
+  seconds: 30
+buffer_time:
+  minutes: 5
+
+es_host: elasticsearch
+es_port: 9200
+use_ssl: false
+verify_certs: false
+es_username: ti_elastalert
+es_password: __ES_PASSWORD__
+
+writeback_index: elastalert_status
+alert_time_limit:
+  days: 2

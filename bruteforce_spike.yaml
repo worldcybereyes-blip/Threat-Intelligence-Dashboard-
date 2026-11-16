@@ -1,0 +1,28 @@
+name: "TI - SSH/Telnet brute-force burst from a single IP"
+type: frequency
+index: honeypot-cowrie-*
+timestamp_field: "@timestamp"
+timestamp_type: iso
+num_events: 40
+timeframe:
+  minutes: 5
+filter:
+  - term:
+      event.action: "cowrie.login.failed"
+query_key: source.ip
+realert:
+  hours: 1
+alert:
+  - debug
+alert_subject: "[Honeypot] Brute-force burst from {0}"
+alert_subject_args:
+  - source.ip
+alert_text_type: alert_text_only
+alert_text: |
+  {0} made at least 40 failed logins within 5 minutes ({1}, {2}).
+  Threat-intel verdict: {3}
+alert_text_args:
+  - source.ip
+  - source.geo.country_name
+  - source.as.organization.name
+  - ti.verdict
